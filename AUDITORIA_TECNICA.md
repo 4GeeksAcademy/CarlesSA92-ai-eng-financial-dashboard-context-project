@@ -1,5 +1,19 @@
 # Auditoría técnica del proyecto
 
+## Índice
+
+1. [Resumen ejecutivo breve](#1-resumen-ejecutivo-breve)
+2. [Stack tecnológico](#2-stack-tecnológico)
+3. [Arquitectura del sistema](#3-arquitectura-del-sistema)
+4. [Patrones y decisiones de implementación](#4-patrones-y-decisiones-de-implementación)
+5. [Scripts y arranque](#5-scripts-y-arranque)
+6. [Mapa de trazabilidad frontend-backend](#6-mapa-de-trazabilidad-frontend-backend)
+7. [Calidad y pruebas](#7-calidad-y-pruebas)
+8. [Riesgos técnicos y deuda (priorizado)](#8-riesgos-técnicos-y-deuda-priorizado)
+9. [Sección de vacíos de información](#9-sección-de-vacíos-de-información)
+10. [Checklist de verificación final](#10-checklist-de-verificación-final)
+11. [Inconsistencias encontradas](#inconsistencias-encontradas)
+
 ## 1. Resumen ejecutivo breve
 
 - El proyecto está organizado en dos servicios Docker Compose: frontend y backend, con dependencia explícita del frontend hacia backend.
@@ -49,11 +63,11 @@
 
 | Capa | Tecnología/Librería | Versión | Uso en el proyecto | Evidencia |
 |---|---|---|---|---|
-| Runtime backend | Python (imagen Docker) | 3.13-slim (fijada en Dockerfile) | Base de ejecución del servicio backend | backend/Dockerfile:1 |
+| Runtime backend | Python (imagen Docker) | 3.13-slim (fijada en Dockerfile) | Base de ejecución del servicio backend | [backend/Dockerfile:1](backend/Dockerfile#L1) |
 | Framework backend | FastAPI | versión no fijada | Servir API HTTP y enrutado | [backend/requirements.txt:1](backend/requirements.txt#L1); [backend/app/main.py:1](backend/app/main.py#L1) |
-| Servidor ASGI backend | Uvicorn | versión no fijada | Ejecución de app.main:app | [backend/requirements.txt:2](backend/requirements.txt#L2); backend/Dockerfile:12 |
-| Debug backend | debugpy | versión no fijada | Listener de depuración en puerto 5678 | [backend/requirements.txt:3](backend/requirements.txt#L3); backend/Dockerfile:10; backend/Dockerfile:12 |
-| Runtime frontend | Node (imagen Docker) | 24-alpine (fijada en Dockerfile) | Base de ejecución del frontend | frontend/Dockerfile:1 |
+| Servidor ASGI backend | Uvicorn | versión no fijada | Ejecución de app.main:app | [backend/requirements.txt:2](backend/requirements.txt#L2); [backend/Dockerfile:12](backend/Dockerfile#L12) |
+| Debug backend | debugpy | versión no fijada | Listener de depuración en puerto 5678 | [backend/requirements.txt:3](backend/requirements.txt#L3); [backend/Dockerfile:10](backend/Dockerfile#L10); [backend/Dockerfile:12](backend/Dockerfile#L12) |
+| Runtime frontend | Node (imagen Docker) | 24-alpine (fijada en Dockerfile) | Base de ejecución del frontend | [frontend/Dockerfile:1](frontend/Dockerfile#L1) |
 | Framework frontend | React | versión no fijada (^19.2.4) | Renderizado de UI | [frontend/package.json:19](frontend/package.json#L19); [frontend/src/main.tsx:1](frontend/src/main.tsx#L1) |
 | Lenguaje frontend | TypeScript | versión no fijada (~6.0.2) | Tipado estático en frontend | [frontend/package.json:39](frontend/package.json#L39); [frontend/src/lib/financial-types.ts:1](frontend/src/lib/financial-types.ts#L1) |
 | Build tooling frontend | Vite | versión no fijada (^8.0.4) | dev server, build, preview, proxy /api | [frontend/package.json:7](frontend/package.json#L7); [frontend/package.json:8](frontend/package.json#L8); [frontend/package.json:10](frontend/package.json#L10); [frontend/package.json:41](frontend/package.json#L41); [frontend/vite.config.ts:7](frontend/vite.config.ts#L7); [frontend/vite.config.ts:12](frontend/vite.config.ts#L12) |
@@ -62,7 +76,7 @@
 | Testing frontend | Vitest + coverage-v8 | versiones no fijadas (^4.1.4) | Tests de utilidades financieras | [frontend/package.json:11](frontend/package.json#L11); [frontend/package.json:13](frontend/package.json#L13); [frontend/package.json:31](frontend/package.json#L31); [frontend/package.json:42](frontend/package.json#L42); [frontend/src/lib/financial-utils.test.ts:1](frontend/src/lib/financial-utils.test.ts#L1) |
 | Linting frontend | ESLint + typescript-eslint + plugins React | versiones no fijadas | Lint para archivos ts/tsx | [frontend/package.json:9](frontend/package.json#L9); [frontend/package.json:33](frontend/package.json#L33); [frontend/package.json:40](frontend/package.json#L40); [frontend/eslint.config.js:11](frontend/eslint.config.js#L11) |
 | Estilos/UI | Tailwind CSS + variables CSS + Recharts + lucide-react + utilidades de clase | versiones no fijadas | Sistema visual, gráficas y iconografía | [frontend/package.json:26](frontend/package.json#L26); [frontend/package.json:38](frontend/package.json#L38); [frontend/package.json:21](frontend/package.json#L21); [frontend/package.json:18](frontend/package.json#L18); [frontend/package.json:16](frontend/package.json#L16); [frontend/package.json:17](frontend/package.json#L17); [frontend/package.json:22](frontend/package.json#L22); [frontend/src/index.css:1](frontend/src/index.css#L1); [frontend/src/components/dashboard/income-outcome-chart.tsx:6](frontend/src/components/dashboard/income-outcome-chart.tsx#L6) |
-| Contenedores | Docker Compose + Dockerfiles por servicio | versión no fijada en código | Orquestación local frontend/backend | [docker-compose.yml:1](docker-compose.yml#L1); [docker-compose.yml:2](docker-compose.yml#L2); [docker-compose.yml:14](docker-compose.yml#L14); backend/Dockerfile:1; frontend/Dockerfile:1 |
+| Contenedores | Docker Compose + Dockerfiles por servicio | versión no fijada en código | Orquestación local frontend/backend | [docker-compose.yml:1](docker-compose.yml#L1); [docker-compose.yml:2](docker-compose.yml#L2); [docker-compose.yml:14](docker-compose.yml#L14); [backend/Dockerfile:1](backend/Dockerfile#L1); [frontend/Dockerfile:1](frontend/Dockerfile#L1) |
 
 ## 3. Arquitectura del sistema
 
@@ -279,8 +293,8 @@ Comandos adicionales de arranque observables en código:
 
 | Comando | Qué hace | Dónde está definido | Evidencia |
 |---|---|---|---|
-| python -m debugpy --listen [0.0.0.0:5678](0.0.0.0#L5678) -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload | Arranque backend en contenedor con debug y recarga | CMD de imagen backend | backend/Dockerfile:12 |
-| npm run dev -- --host 0.0.0.0 --port 5173 | Arranque frontend en contenedor | CMD de imagen frontend | frontend/Dockerfile:12 |
+| python -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload | Arranque backend en contenedor con debug y recarga | CMD de imagen backend | [backend/Dockerfile:12](backend/Dockerfile#L12) |
+| npm run dev -- --host 0.0.0.0 --port 5173 | Arranque frontend en contenedor | CMD de imagen frontend | [frontend/Dockerfile:12](frontend/Dockerfile#L12) |
 
 ## 6. Mapa de trazabilidad frontend-backend
 
