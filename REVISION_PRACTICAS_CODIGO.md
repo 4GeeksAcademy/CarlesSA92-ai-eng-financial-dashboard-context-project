@@ -34,6 +34,20 @@ Fecha: 2026-07-06
 - Unificar filtros por business_type en un endpoint parametrizable.
 - Preparar interfaz de repositorio (aunque siga mock) para simplificar migracion futura a DB.
 
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Separacion de frontend y backend en servicios distintos: [docker-compose.yml](docker-compose.yml#L2) y [docker-compose.yml](docker-compose.yml#L14).
+2. Logica de negocio separada de la vista en frontend: [frontend/src/lib/financial-utils.ts](frontend/src/lib/financial-utils.ts#L21) y consumo desde [frontend/src/App.tsx](frontend/src/App.tsx#L32).
+3. Contratos tipados en ambas capas: [backend/app/routes.py](backend/app/routes.py#L22) y [frontend/src/lib/financial-types.ts](frontend/src/lib/financial-types.ts#L5).
+
+Malas practicas / riesgos
+
+1. Concentracion de responsabilidades en un solo modulo backend: [backend/app/routes.py](backend/app/routes.py#L1).
+2. Duplicacion de endpoints por tipo de negocio: [backend/app/routes.py](backend/app/routes.py#L362) y [backend/app/routes.py](backend/app/routes.py#L378).
+3. Generacion de dataset mock por request en endpoints: [backend/app/routes.py](backend/app/routes.py#L94) y [backend/app/routes.py](backend/app/routes.py#L248).
+
 ## 2) Seguridad
 
 ### Buenas practicas
@@ -50,6 +64,17 @@ Fecha: 2026-07-06
 - Configurar CORS por entorno con lista blanca de dominios.
 - Deshabilitar debugpy por defecto y habilitarlo solo en perfil dev (por variable de entorno o compose override).
 
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Validacion declarativa de parametros con tipos y Query: [backend/app/routes.py](backend/app/routes.py#L10) y [backend/app/routes.py](backend/app/routes.py#L248).
+
+Malas practicas / riesgos
+
+1. CORS demasiado permisivo: [backend/app/main.py](backend/app/main.py#L9) y [backend/app/main.py](backend/app/main.py#L10).
+2. Debug remoto habilitado por defecto y expuesto: [backend/Dockerfile](backend/Dockerfile#L12) y [docker-compose.yml](docker-compose.yml#L20).
+
 ## 3) Naming y consistencia
 
 ### Buenas practicas
@@ -65,6 +90,18 @@ Fecha: 2026-07-06
 ### Recomendacion
 
 - Definir guia de estilo de naming de dominio e idioma de interfaz (es/en) para todo el proyecto.
+
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Nombres de funciones de negocio descriptivos: [backend/app/routes.py](backend/app/routes.py#L161) y [backend/app/routes.py](backend/app/routes.py#L219).
+2. Tipos de dominio explicitos y consistentes: [backend/app/routes.py](backend/app/routes.py#L10) y [frontend/src/lib/financial-types.ts](frontend/src/lib/financial-types.ts#L1).
+
+Malas practicas / riesgos
+
+1. Mezcla de idioma en interfaz y mensajes: [frontend/src/components/dashboard/kpi-row.tsx](frontend/src/components/dashboard/kpi-row.tsx#L15) y [frontend/src/App.tsx](frontend/src/App.tsx#L37).
+2. Terminologia de dominio potencialmente ambigua para negocio no tecnico: [frontend/src/lib/financial-types.ts](frontend/src/lib/financial-types.ts#L1).
 
 ## 4) Testing
 
@@ -86,6 +123,20 @@ Fecha: 2026-07-06
 - Agregar tests de contrato para endpoints no cubiertos por escenarios de error.
 - Planificar actualizacion de stack de test backend para resolver warning deprecado.
 
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Pruebas backend para generacion y orden de datos: [backend/tests/test_routes.py](backend/tests/test_routes.py#L12).
+2. Pruebas backend de filtros de endpoint: [backend/tests/test_routes.py](backend/tests/test_routes.py#L36).
+3. Pruebas unitarias frontend de calculos y formateadores: [frontend/src/lib/financial-utils.test.ts](frontend/src/lib/financial-utils.test.ts#L35), [frontend/src/lib/financial-utils.test.ts](frontend/src/lib/financial-utils.test.ts#L63) y [frontend/src/lib/financial-utils.test.ts](frontend/src/lib/financial-utils.test.ts#L106).
+
+Malas practicas / riesgos
+
+1. Falta de pruebas de componentes UI (hay pruebas de utilidades, no de render/comportamiento): [frontend/src/lib/financial-utils.test.ts](frontend/src/lib/financial-utils.test.ts#L35) y [frontend/src/App.tsx](frontend/src/App.tsx#L23).
+2. Cobertura limitada de casos negativos/validacion de error en API: [backend/tests/test_routes.py](backend/tests/test_routes.py#L36) y [backend/tests/test_routes.py](backend/tests/test_routes.py#L121).
+3. Riesgo de deuda por warning deprecado en stack de pruebas (uso de TestClient + httpx): [backend/tests/test_routes.py](backend/tests/test_routes.py#L3) y [backend/requirements.txt](backend/requirements.txt#L6).
+
 ## 5) Documentacion
 
 ### Buenas practicas
@@ -102,6 +153,18 @@ Fecha: 2026-07-06
 
 - Crear frontend/.env.example o ajustar README para no referenciar archivos inexistentes.
 - Agregar una guia CONTRIBUTING.md o seccion de convenciones tecnicas.
+
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Documentacion bilingue: [README.md](README.md#L1) y [README.es.md](README.es.md#L1).
+2. Arranque local documentado con Docker: [README.md](README.md#L42) y [README.es.md](README.es.md#L42).
+
+Malas practicas / riesgos
+
+1. Referencia a archivo de entorno no presente: [README.md](README.md#L46) y [README.es.md](README.es.md#L46).
+2. Falta de convenciones tecnicas explicitadas en README principal: [README.md](README.md#L20).
 
 ## 6) DX (Developer Experience)
 
@@ -123,6 +186,20 @@ Fecha: 2026-07-06
 - Alinear version de Python entre Dockerfile y Pipfile.
 - Agregar CI minimo (lint + tests frontend/backend).
 
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Scripts de trabajo claros (dev, build, lint, test): [frontend/package.json](frontend/package.json#L7).
+2. Alias de imports para mantenibilidad: [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L13) y [frontend/vite.config.ts](frontend/vite.config.ts#L20).
+3. Configuracion de calidad estandar en lint y TypeScript: [frontend/eslint.config.js](frontend/eslint.config.js#L13) y [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L22).
+
+Malas practicas / riesgos
+
+1. Dependencias Python sin version fijada: [backend/requirements.txt](backend/requirements.txt#L1) y [backend/Pipfile](backend/Pipfile#L7).
+2. Inconsistencia de version de Python entre herramientas: [backend/Pipfile](backend/Pipfile#L17) y [backend/Dockerfile](backend/Dockerfile#L1).
+3. Evidencia de flujo de calidad local pero sin trazabilidad de CI en repo: [frontend/package.json](frontend/package.json#L9) y [frontend/package.json](frontend/package.json#L11).
+
 ## 7) Performance y escalabilidad
 
 ### Buenas practicas
@@ -137,6 +214,17 @@ Fecha: 2026-07-06
 ### Recomendacion
 
 - Preparar capa de acceso a datos y cache simple para escenarios de mayor volumen.
+
+### Ejemplos con enlaces
+
+Buenas practicas
+
+1. Agregaciones simples y eficientes para volumen de demo: [frontend/src/lib/financial-utils.ts](frontend/src/lib/financial-utils.ts#L39) y [backend/app/routes.py](backend/app/routes.py#L161).
+
+Malas practicas / riesgos
+
+1. Recalculo recurrente de datos base por endpoint: [backend/app/routes.py](backend/app/routes.py#L94) y [backend/app/routes.py](backend/app/routes.py#L248).
+2. Cadena de filtrados en memoria repetida entre rutas: [backend/app/routes.py](backend/app/routes.py#L125) y [backend/app/routes.py](backend/app/routes.py#L287).
 
 ## Priorizacion sugerida (top 5)
 
