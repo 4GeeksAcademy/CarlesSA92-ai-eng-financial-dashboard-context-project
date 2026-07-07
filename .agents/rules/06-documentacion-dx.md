@@ -27,3 +27,6 @@ Reduce fricción de entrada y evita errores por documentación desactualizada.
 - README coherente con el estado real.
 - Archivo de ejemplo de entorno.
 - Sección de convenciones y flujo de contribución.
+
+## Proceso
+- Validada.

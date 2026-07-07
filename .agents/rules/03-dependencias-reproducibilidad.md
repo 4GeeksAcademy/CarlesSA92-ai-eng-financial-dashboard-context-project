@@ -27,3 +27,6 @@ Evita drift entre entornos y fallos difíciles de reproducir.
 - Versiones explícitas en archivos de dependencias.
 - Runtime alineado en tooling.
 - Registro de validación en PR/CI.
+
+## Proceso
+- Validada.

@@ -27,3 +27,6 @@ Permite elevar estándares sin bloquear el avance del proyecto.
 - Lista de pendientes por fase.
 - Registro de excepciones con fecha.
 - Seguimiento de cierre de excepciones.
+
+## Proceso
+- Validada.

@@ -27,3 +27,6 @@ Previene exposición innecesaria de servicios y reduce superficie de ataque.
 - Configuración de CORS por entorno.
 - Compose override o perfil dev para debug.
 - Nota de seguridad en documentación.
+
+## Proceso
+- Validada.

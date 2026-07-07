@@ -27,3 +27,6 @@ Aumenta confianza en cambios y reduce regresiones funcionales.
 - Casos de prueba añadidos junto con la funcionalidad.
 - Logs de ejecución de lint y tests.
 - Corrección planificada de warnings deprecados.
+
+## Proceso
+- Validada.

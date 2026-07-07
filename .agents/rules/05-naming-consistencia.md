@@ -27,3 +27,6 @@ Mejora comprensión del dominio y reduce ambigüedades entre equipo técnico y n
 - Convención de idioma documentada.
 - Glosario breve de términos financieros.
 - Revisión de nombres en PR.
+
+## Proceso
+- Validada.

@@ -26,3 +26,6 @@ Reduce acoplamiento, evita archivos monolíticos y facilita pruebas, mantenimien
 - Módulos separados por responsabilidad.
 - Endpoints parametrizados para variaciones B2B/B2C.
 - Modelos Pydantic y tipos TypeScript alineados.
+
+## Proceso
+- Validada.
