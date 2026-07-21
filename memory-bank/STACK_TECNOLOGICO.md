@@ -1,6 +1,6 @@
 # Stack tecnologico del repositorio
 
-Fecha de corte: 2026-07-07
+Fecha de corte: 2026-07-21
 
 Este documento resume el stack del proyecto usando solo hechos observables en el codigo y configuraciones del repositorio.
 
@@ -8,9 +8,10 @@ Este documento resume el stack del proyecto usando solo hechos observables en el
 
 ### Framework, runtime y build
 
+- Next.js 15 (App Router): [frontend/package.json](../frontend/package.json#L18), [frontend/app/page.tsx](../frontend/app/page.tsx)
 - React 19 (libreria de UI): [frontend/package.json](../frontend/package.json#L19)
 - React DOM 19 (render web): [frontend/package.json](../frontend/package.json#L20)
-- Vite 8 (dev server/build): [frontend/package.json](../frontend/package.json#L41)
+- next dev / next build / next start: [frontend/package.json](../frontend/package.json#L7)
 - TypeScript 6 (tipado estatico): [frontend/package.json](../frontend/package.json#L39)
 - Node base en contenedor: node:24-alpine: [frontend/Dockerfile](../frontend/Dockerfile#L1)
 
@@ -18,19 +19,20 @@ Este documento resume el stack del proyecto usando solo hechos observables en el
 
 - Recharts para graficas: [frontend/package.json](../frontend/package.json#L21)
 - Lucide React para iconografia: [frontend/package.json](../frontend/package.json#L18)
-- Tailwind CSS 4 + plugin Vite: [frontend/package.json](../frontend/package.json#L38), [frontend/package.json](../frontend/package.json#L26)
+- Tailwind CSS 4 + plugin PostCSS para Next.js: [frontend/package.json](../frontend/package.json#L38), [frontend/postcss.config.mjs](../frontend/postcss.config.mjs)
 - Utilidades de clases: clsx, tailwind-merge, class-variance-authority: [frontend/package.json](../frontend/package.json#L16), [frontend/package.json](../frontend/package.json#L22), [frontend/package.json](../frontend/package.json#L17)
+- Fuentes optimizadas con next/font: [frontend/app/layout.tsx](../frontend/app/layout.tsx)
 
 ### Configuracion tecnica relevante
 
-- Alias de import "@" hacia src: [frontend/vite.config.ts](../frontend/vite.config.ts#L20), [frontend/tsconfig.app.json](../frontend/tsconfig.app.json#L13)
-- Proxy de desarrollo de /api hacia backend: [frontend/vite.config.ts](../frontend/vite.config.ts#L12), [frontend/vite.config.ts](../frontend/vite.config.ts#L13)
+- Alias de import "@" hacia src: [frontend/tsconfig.json](../frontend/tsconfig.json)
+- Rewrite de /api hacia backend: [frontend/next.config.ts](../frontend/next.config.ts)
 - Scripts de trabajo: dev, build, lint, test, coverage: [frontend/package.json](../frontend/package.json#L7)
-- Compilacion TS en modo bundler/noEmit: [frontend/tsconfig.app.json](../frontend/tsconfig.app.json#L11), [frontend/tsconfig.app.json](../frontend/tsconfig.app.json#L18)
+- Compilacion TS orientada a Next.js con plugin next: [frontend/tsconfig.json](../frontend/tsconfig.json)
 
 ### Calidad en frontend
 
-- ESLint con base JS + TypeScript ESLint + React Hooks + React Refresh: [frontend/eslint.config.js](../frontend/eslint.config.js#L13), [frontend/eslint.config.js](../frontend/eslint.config.js#L14), [frontend/eslint.config.js](../frontend/eslint.config.js#L15), [frontend/eslint.config.js](../frontend/eslint.config.js#L16)
+- ESLint con base JS + TypeScript ESLint + React Hooks: [frontend/eslint.config.js](../frontend/eslint.config.js)
 - Vitest como runner de pruebas y cobertura V8: [frontend/package.json](../frontend/package.json#L11), [frontend/package.json](../frontend/package.json#L13), [frontend/package.json](../frontend/package.json#L31)
 
 ## 2. Backend
@@ -84,6 +86,7 @@ Este documento resume el stack del proyecto usando solo hechos observables en el
 
 ### Frontend (produccion)
 
+- next ^15.5.0: [frontend/package.json](../frontend/package.json#L18)
 - react ^19.2.4: [frontend/package.json](../frontend/package.json#L19)
 - react-dom ^19.2.4: [frontend/package.json](../frontend/package.json#L20)
 - recharts ^3.8.1: [frontend/package.json](../frontend/package.json#L21)
@@ -94,14 +97,13 @@ Este documento resume el stack del proyecto usando solo hechos observables en el
 
 ### Frontend (desarrollo/calidad)
 
-- vite ^8.0.4: [frontend/package.json](../frontend/package.json#L41)
 - typescript ~6.0.2: [frontend/package.json](../frontend/package.json#L39)
 - eslint ^9.39.4: [frontend/package.json](../frontend/package.json#L33)
 - typescript-eslint ^8.58.0: [frontend/package.json](../frontend/package.json#L40)
 - vitest ^4.1.4: [frontend/package.json](../frontend/package.json#L42)
 - @vitest/coverage-v8 ^4.1.4: [frontend/package.json](../frontend/package.json#L31)
 - tailwindcss ^4.2.2: [frontend/package.json](../frontend/package.json#L38)
-- @tailwindcss/vite ^4.2.2: [frontend/package.json](../frontend/package.json#L26)
+- @tailwindcss/postcss ^4.2.2: [frontend/package.json](../frontend/package.json#L26)
 
 ### Backend
 
@@ -115,7 +117,7 @@ Este documento resume el stack del proyecto usando solo hechos observables en el
 ## 5. Notas de interpretacion (hechos observables)
 
 - El repositorio usa stack full-stack React + FastAPI con orquestacion Docker Compose.
-- El frontend esta preparado para desarrollo con proxy /api a backend.
+- El frontend esta preparado para desarrollo con rewrite /api a backend mediante Next.js.
 - El backend esta configurado para ejecución con uvicorn y debugpy en el CMD del contenedor.
 - Existen dos fuentes de dependencias Python (requirements.txt y Pipfile) y no están pinneadas por version exacta.
 - No se ha añadido en este documento ninguna tecnologia no presente en archivos del repositorio.

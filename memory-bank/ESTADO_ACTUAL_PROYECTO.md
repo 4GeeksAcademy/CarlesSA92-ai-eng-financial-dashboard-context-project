@@ -9,6 +9,12 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ### 1.1 Frontend
 
+- [x] Migración de frontend desde Vite a Next.js (App Router): [frontend/app/page.tsx](../frontend/app/page.tsx), [frontend/package.json](../frontend/package.json)
+- [x] Metadata API en layout y páginas (title + description): [frontend/app/layout.tsx](../frontend/app/layout.tsx), [frontend/app/page.tsx](../frontend/app/page.tsx), [frontend/app/not-found.tsx](../frontend/app/not-found.tsx)
+- [x] Optimización de fuente con next/font (Inter, display swap): [frontend/app/layout.tsx](../frontend/app/layout.tsx), [frontend/src/index.css](../frontend/src/index.css)
+- [x] Reducción de bundle inicial con carga dinámica de charts (next/dynamic): [frontend/src/App.tsx](../frontend/src/App.tsx)
+- [x] Mitigación de layout shift percibido en KPIs con tabular-nums y altura estable: [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx)
+- [x] Tailwind restaurado en Next.js mediante PostCSS: [frontend/postcss.config.mjs](../frontend/postcss.config.mjs), [frontend/package.json](../frontend/package.json)
 - [x] Dashboard financiero con layout principal y secciones KPI + gráficos: [frontend/src/App.tsx](../frontend/src/App.tsx#L45)
 - [x] Fila de KPIs (Total Income, Total Outcome, Profit, Profit Margin): [frontend/src/components/dashboard/kpi-row.tsx](../frontend/src/components/dashboard/kpi-row.tsx#L11)
 - [x] Gráfico Income vs Outcome: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L45)
@@ -37,8 +43,9 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 ### 1.3 Infraestructura y tooling
 
 - [x] Orquestación con Docker Compose (frontend + backend): [docker-compose.yml](../docker-compose.yml#L2)
-- [x] Vite proxy de /api hacia backend: [frontend/vite.config.ts](../frontend/vite.config.ts#L12)
+- [x] Rewrite de Next.js para /api hacia backend: [frontend/next.config.ts](../frontend/next.config.ts)
 - [x] Scripts de desarrollo, build, lint y test en frontend: [frontend/package.json](../frontend/package.json#L7)
+- [x] Frontend Docker actualizado para ejecutar Next.js en puerto 5173: [frontend/Dockerfile](../frontend/Dockerfile)
 - [x] Reglas de agentes definidas en .agents/rules: [.agents/rules/01-arquitectura-modularidad.md](../.agents/rules/01-arquitectura-modularidad.md#L1)
 
 ### 1.4 Calidad y pruebas
@@ -47,6 +54,7 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 - [x] Tests frontend de utilidades financieras: [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts#L35)
 - [x] Lint configurado para frontend: [frontend/eslint.config.js](../frontend/eslint.config.js#L8)
 - [x] Verificación posterior a cambios de accesibilidad en frontend (lint y tests): [frontend/package.json](../frontend/package.json#L9), [frontend/package.json](../frontend/package.json#L11)
+- [x] Build de producción de Next.js validado tras optimizaciones de rendimiento: [frontend/package.json](../frontend/package.json)
 
 ## 2) Gaps conocidos (pendientes)
 

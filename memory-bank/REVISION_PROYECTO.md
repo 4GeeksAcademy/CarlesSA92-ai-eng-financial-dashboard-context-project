@@ -26,6 +26,32 @@ Fecha: 2026-07-06
 	- Contraste de color: verificado en tokens principales (texto y elementos interactivos) con cumplimiento AA en pares criticos evaluados.
 	- Auditoria automatica axe: bloqueada en este contenedor por ausencia de binario Chrome; pendiente repetir en entorno con navegador.
 
+## Actualizacion 2026-07-21: skill vercel-react-best-practices aplicada
+
+- Se aplicaron optimizaciones de React/Next.js enfocadas en rendimiento y estabilidad visual:
+	- Migracion del frontend a Next.js App Router.
+	- Definicion de title y meta description con Metadata API en layout y paginas.
+	- Fuente Inter optimizada con next/font (display swap).
+	- Carga dinamica de graficos con next/dynamic para reducir JS inicial.
+	- Mitigacion de layout shift percibido en KPIs con `tabular-nums` y altura minima estable.
+	- Manejo de fetch client con AbortController para evitar actualizaciones tras unmount.
+	- Pipeline de estilos en Next restaurado con PostCSS y @tailwindcss/postcss.
+
+- Evidencias principales:
+	- [frontend/app/layout.tsx](../frontend/app/layout.tsx)
+	- [frontend/app/page.tsx](../frontend/app/page.tsx)
+	- [frontend/app/not-found.tsx](../frontend/app/not-found.tsx)
+	- [frontend/src/App.tsx](../frontend/src/App.tsx)
+	- [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx)
+	- [frontend/src/index.css](../frontend/src/index.css)
+	- [frontend/postcss.config.mjs](../frontend/postcss.config.mjs)
+	- [frontend/next.config.ts](../frontend/next.config.ts)
+
+- Validaciones ejecutadas:
+	- Frontend build (Next.js): OK.
+	- Frontend lint: OK.
+	- Frontend runtime en Docker Compose: OK en puerto 5173.
+
 ## Resumen rapido
 
 - El proyecto tiene una base solida para aprendizaje y desarrollo local: separacion frontend/backend, tipado en frontend, modelos Pydantic en backend, lint y tests funcionando.
@@ -215,7 +241,7 @@ Malas practicas / riesgos
 Buenas practicas
 
 1. Scripts de trabajo claros (dev, build, lint, test): [frontend/package.json](frontend/package.json#L7).
-2. Alias de imports para mantenibilidad: [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L13) y [frontend/vite.config.ts](frontend/vite.config.ts#L20).
+2. Alias de imports para mantenibilidad: [frontend/tsconfig.json](frontend/tsconfig.json) y [frontend/next.config.ts](frontend/next.config.ts).
 3. Configuracion de calidad estandar en lint y TypeScript: [frontend/eslint.config.js](frontend/eslint.config.js#L13) y [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L22).
 
 Malas practicas / riesgos

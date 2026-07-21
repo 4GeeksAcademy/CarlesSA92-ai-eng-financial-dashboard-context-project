@@ -14,6 +14,14 @@
 10. [Checklist de verificación final](#10-checklist-de-verificación-final)
 11. [Inconsistencias encontradas](#inconsistencias-encontradas)
 
+## Actualizacion 2026-07-21: vercel-react-best-practices
+
+- Frontend migrado a Next.js App Router con Metadata API para title y description.
+- Carga de fuente optimizada con next/font.
+- Graficos cargados de forma dinamica para reducir JS inicial.
+- Ajustes para estabilidad visual (layout shift percibido) en KPIs.
+- Integracion de Tailwind con PostCSS para entorno Next.js.
+
 ## 1. Resumen ejecutivo breve
 
 - El proyecto está organizado en dos servicios Docker Compose: frontend y backend, con dependencia explícita del frontend hacia backend.
@@ -70,8 +78,8 @@
 | Runtime frontend | Node (imagen Docker) | 24-alpine (fijada en Dockerfile) | Base de ejecución del frontend | [frontend/Dockerfile:1](frontend/Dockerfile#L1) |
 | Framework frontend | React | versión no fijada (^19.2.4) | Renderizado de UI | [frontend/package.json:19](frontend/package.json#L19); [frontend/src/main.tsx:1](frontend/src/main.tsx#L1) |
 | Lenguaje frontend | TypeScript | versión no fijada (~6.0.2) | Tipado estático en frontend | [frontend/package.json:39](frontend/package.json#L39); [frontend/src/lib/financial-types.ts:1](frontend/src/lib/financial-types.ts#L1) |
-| Build tooling frontend | Vite | versión no fijada (^8.0.4) | dev server, build, preview, proxy /api | [frontend/package.json:7](frontend/package.json#L7); [frontend/package.json:8](frontend/package.json#L8); [frontend/package.json:10](frontend/package.json#L10); [frontend/package.json:41](frontend/package.json#L41); [frontend/vite.config.ts:7](frontend/vite.config.ts#L7); [frontend/vite.config.ts:12](frontend/vite.config.ts#L12) |
-| Plugin frontend | @vitejs/plugin-react | versión no fijada (^6.0.1) | Soporte React en Vite | [frontend/package.json:30](frontend/package.json#L30); [frontend/vite.config.ts:2](frontend/vite.config.ts#L2); [frontend/vite.config.ts:8](frontend/vite.config.ts#L8) |
+| Build tooling frontend | Next.js | versión no fijada (^15.5.0) | dev server, build y start con App Router y metadata API | [frontend/package.json:7](frontend/package.json#L7); [frontend/app/layout.tsx](frontend/app/layout.tsx); [frontend/app/page.tsx](frontend/app/page.tsx) |
+| Integracion estilos frontend | PostCSS + Tailwind | versiones no fijadas | Compilacion de Tailwind en Next.js | [frontend/postcss.config.mjs](frontend/postcss.config.mjs); [frontend/package.json:26](frontend/package.json#L26) |
 | Testing backend | pytest, pytest-cov, fastapi.testclient | versiones no fijadas | Tests de rutas y funciones backend | [backend/requirements.txt:4](backend/requirements.txt#L4); [backend/requirements.txt:5](backend/requirements.txt#L5); [backend/tests/test_routes.py:3](backend/tests/test_routes.py#L3) |
 | Testing frontend | Vitest + coverage-v8 | versiones no fijadas (^4.1.4) | Tests de utilidades financieras | [frontend/package.json:11](frontend/package.json#L11); [frontend/package.json:13](frontend/package.json#L13); [frontend/package.json:31](frontend/package.json#L31); [frontend/package.json:42](frontend/package.json#L42); [frontend/src/lib/financial-utils.test.ts:1](frontend/src/lib/financial-utils.test.ts#L1) |
 | Linting frontend | ESLint + typescript-eslint + plugins React | versiones no fijadas | Lint para archivos ts/tsx | [frontend/package.json:9](frontend/package.json#L9); [frontend/package.json:33](frontend/package.json#L33); [frontend/package.json:40](frontend/package.json#L40); [frontend/eslint.config.js:11](frontend/eslint.config.js#L11) |
@@ -82,15 +90,14 @@
 
 ### 3.1 Arquitectura general
 
-- Arquitectura de dos servicios: frontend (Vite + React) y backend (FastAPI) en Docker Compose.
+- Arquitectura de dos servicios: frontend (Next.js + React) y backend (FastAPI) en Docker Compose.
   - Evidencia: [docker-compose.yml:2](docker-compose.yml#L2)
   - Evidencia: [docker-compose.yml:14](docker-compose.yml#L14)
   - Evidencia: [frontend/package.json:7](frontend/package.json#L7)
   - Evidencia: [backend/app/main.py:1](backend/app/main.py#L1)
 
-- El frontend se comunica al backend mediante ruta /api con proxy a http://backend:8000.
-  - Evidencia: [frontend/vite.config.ts:12](frontend/vite.config.ts#L12)
-  - Evidencia: [frontend/vite.config.ts:13](frontend/vite.config.ts#L13)
+- El frontend se comunica al backend mediante ruta /api con rewrite en Next.js hacia http://backend:8000.
+  - Evidencia: [frontend/next.config.ts](frontend/next.config.ts)
 
 - El backend centraliza lógica de generación, filtrado y agregación en backend/app/routes.py y registra el router en main.py.
   - Evidencia: [backend/app/main.py:4](backend/app/main.py#L4)
@@ -189,9 +196,9 @@
 
 ```mermaid
 flowchart LR
-  U[Usuario navegador] --> FE[Frontend React/Vite]
-  FE -->|GET /api/metrics| VITE[Vite proxy /api]
-  VITE -->|target http://backend:8000| BE[FastAPI router]
+  U[Usuario navegador] --> FE[Frontend React/Next.js]
+  FE -->|GET /api/metrics| RW[Next.js rewrite /api]
+  RW -->|target http://backend:8000| BE[FastAPI router]
   BE --> GEN[generate_mock_movements]
   BE --> FIL[filter_movements]
   BE --> AGG[summarize_movements / calculate_net_value]
@@ -200,8 +207,8 @@ flowchart LR
 ```
 
 Mapeo de bloques a evidencia:
-- Frontend React/Vite: [frontend/src/main.tsx:1](frontend/src/main.tsx#L1); [frontend/package.json:7](frontend/package.json#L7)
-- Vite proxy /api a backend: [frontend/vite.config.ts:12](frontend/vite.config.ts#L12); [frontend/vite.config.ts:13](frontend/vite.config.ts#L13)
+- Frontend React/Next.js: [frontend/app/page.tsx](frontend/app/page.tsx); [frontend/package.json:7](frontend/package.json#L7)
+- Next.js rewrite /api a backend: [frontend/next.config.ts](frontend/next.config.ts)
 - FastAPI router: [backend/app/main.py:14](backend/app/main.py#L14); [backend/app/routes.py:19](backend/app/routes.py#L19)
 - generate_mock_movements: [backend/app/routes.py:94](backend/app/routes.py#L94)
 - filter_movements: [backend/app/routes.py:125](backend/app/routes.py#L125)
@@ -273,10 +280,10 @@ Mapeo de bloques a evidencia:
 
 | Comando | Qué hace | Dónde está definido | Evidencia |
 |---|---|---|---|
-| npm run dev | Ejecuta Vite en modo desarrollo | frontend/package.json scripts.dev | [frontend/package.json:7](frontend/package.json#L7) |
-| npm run build | Ejecuta compilación TypeScript y build Vite | frontend/package.json scripts.build | [frontend/package.json:8](frontend/package.json#L8) |
+| npm run dev | Ejecuta Next.js en modo desarrollo | frontend/package.json scripts.dev | [frontend/package.json:7](frontend/package.json#L7) |
+| npm run build | Ejecuta build de producción de Next.js | frontend/package.json scripts.build | [frontend/package.json:8](frontend/package.json#L8) |
 | npm run lint | Ejecuta ESLint sobre el proyecto frontend | frontend/package.json scripts.lint | [frontend/package.json:9](frontend/package.json#L9) |
-| npm run preview | Ejecuta vista previa de build Vite | frontend/package.json scripts.preview | [frontend/package.json:10](frontend/package.json#L10) |
+| npm run preview | Ejecuta Next.js start para vista previa local | frontend/package.json scripts.preview | [frontend/package.json:10](frontend/package.json#L10) |
 | npm run test | Ejecuta Vitest en modo run | frontend/package.json scripts.test | [frontend/package.json:11](frontend/package.json#L11) |
 | npm run test:watch | Ejecuta Vitest en modo watch | frontend/package.json scripts.test:watch | [frontend/package.json:12](frontend/package.json#L12) |
 | npm run test:coverage | Ejecuta Vitest con cobertura | frontend/package.json scripts.test:coverage | [frontend/package.json:13](frontend/package.json#L13) |
@@ -294,7 +301,7 @@ Comandos adicionales de arranque observables en código:
 | Comando | Qué hace | Dónde está definido | Evidencia |
 |---|---|---|---|
 | python -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload | Arranque backend en contenedor con debug y recarga | CMD de imagen backend | [backend/Dockerfile:12](backend/Dockerfile#L12) |
-| npm run dev -- --host 0.0.0.0 --port 5173 | Arranque frontend en contenedor | CMD de imagen frontend | [frontend/Dockerfile:12](frontend/Dockerfile#L12) |
+| npm run dev -- --hostname 0.0.0.0 | Arranque frontend en contenedor | CMD de imagen frontend | [frontend/Dockerfile:12](frontend/Dockerfile#L12) |
 
 ## 6. Mapa de trazabilidad frontend-backend
 
