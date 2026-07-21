@@ -2,6 +2,30 @@
 
 Fecha: 2026-07-06
 
+## Actualizacion 2026-07-21: skill accessibility aplicada
+
+- Se aplicaron mejoras de accesibilidad en frontend usando la skill `accessibility` (WCAG 2.2):
+	- Navegacion por teclado reforzada con skip link y foco visible.
+	- Estados dinamicos anunciables para carga y error (`role=\"status\"`, `aria-live`, `role=\"alert\"`).
+	- Secciones del dashboard etiquetadas con `aria-labelledby`.
+	- Graficos con `role=\"img\"` y `aria-label` descriptivo.
+	- Iconos y marcadores visuales decorativos ocultos para lector de pantalla (`aria-hidden=\"true\"`).
+	- Semantica de titulos/descripciones en componente base `Card` mejorada a elementos HTML semanticos.
+
+- Evidencias principales:
+	- [frontend/src/App.tsx](../frontend/src/App.tsx#L46)
+	- [frontend/src/index.css](../frontend/src/index.css#L116)
+	- [frontend/src/components/ui/card.tsx](../frontend/src/components/ui/card.tsx#L31)
+	- [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L80)
+	- [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx#L81)
+	- [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L60)
+
+- Validaciones ejecutadas:
+	- Frontend lint: OK.
+	- Frontend tests (Vitest): OK (5/5).
+	- Contraste de color: verificado en tokens principales (texto y elementos interactivos) con cumplimiento AA en pares criticos evaluados.
+	- Auditoria automatica axe: bloqueada en este contenedor por ausencia de binario Chrome; pendiente repetir en entorno con navegador.
+
 ## Resumen rapido
 
 - El proyecto tiene una base solida para aprendizaje y desarrollo local: separacion frontend/backend, tipado en frontend, modelos Pydantic en backend, lint y tests funcionando.

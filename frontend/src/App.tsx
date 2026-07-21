@@ -43,25 +43,44 @@ function App() {
   }, []);
 
   return (
-    <main className="dark min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="dark min-h-screen bg-background text-foreground" aria-busy={loading}>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <div id="main-content" tabIndex={-1} className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
           <DashboardHeader period="2024 - Full Year" />
 
+          <p className="sr-only" role="status" aria-live="polite">
+            {loading
+              ? "Loading financial dashboard data"
+              : "Financial dashboard data loaded"}
+          </p>
+
           {error ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground"
+            >
               {error}
             </div>
           ) : null}
 
-          <section aria-label="Key performance indicators">
+          <section aria-labelledby="kpi-section-title">
+            <h2 id="kpi-section-title" className="sr-only">
+              Key performance indicators
+            </h2>
             <KPIRow metrics={metrics} loading={loading} />
           </section>
 
           <section
-            aria-label="Financial charts"
+            aria-labelledby="charts-section-title"
             className="grid grid-cols-1 gap-4 xl:grid-cols-2"
           >
+            <h2 id="charts-section-title" className="sr-only">
+              Financial charts
+            </h2>
             <IncomeOutcomeChart data={monthlyData} loading={loading} />
             <ProfitPercentChart data={monthlyData} loading={loading} />
           </section>

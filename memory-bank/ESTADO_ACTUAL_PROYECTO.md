@@ -1,6 +1,6 @@
 # Estado actual del proyecto y repositorio
 
-Fecha de corte: 2026-07-07
+Fecha de corte: 2026-07-21
 Fuente base: [memory-bank/PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md), [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md), [memory-bank/STACK_TECNOLOGICO.md](STACK_TECNOLOGICO.md), reglas en [.agents/rules](../.agents/rules/01-arquitectura-modularidad.md).
 
 Este documento funciona como tablero operativo con checks para ir marcando avances reales.
@@ -16,6 +16,10 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 - [x] Estados de carga con skeletons en KPIs y charts: [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L35)
 - [x] Consumo API desde frontend (endpoint /api/metrics): [frontend/src/App.tsx](../frontend/src/App.tsx#L16)
 - [x] Cálculo de KPIs y agregación mensual en utilidades puras: [frontend/src/lib/financial-utils.ts](../frontend/src/lib/financial-utils.ts#L21)
+- [x] Mejora de accesibilidad con landmarks etiquetados, skip link, anuncios de estado y roles ARIA para error/carga: [frontend/src/App.tsx](../frontend/src/App.tsx#L46)
+- [x] Semántica de tarjetas mejorada (títulos/descripciones) y elementos decorativos ocultos a lector de pantalla: [frontend/src/components/ui/card.tsx](../frontend/src/components/ui/card.tsx#L31), [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L60), [frontend/src/components/dashboard/dashboard-header.tsx](../frontend/src/components/dashboard/dashboard-header.tsx#L11)
+- [x] Etiquetado accesible de gráficos y estados sin datos/carga: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L52), [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx#L53)
+- [x] Estilos globales de foco visible y utilidades sr-only/skip-link: [frontend/src/index.css](../frontend/src/index.css#L116)
 
 ### 1.2 Backend
 
@@ -42,6 +46,7 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 - [x] Tests backend sobre rutas y filtros: [backend/tests/test_routes.py](../backend/tests/test_routes.py#L12)
 - [x] Tests frontend de utilidades financieras: [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts#L35)
 - [x] Lint configurado para frontend: [frontend/eslint.config.js](../frontend/eslint.config.js#L8)
+- [x] Verificación posterior a cambios de accesibilidad en frontend (lint y tests): [frontend/package.json](../frontend/package.json#L9), [frontend/package.json](../frontend/package.json#L11)
 
 ## 2) Gaps conocidos (pendientes)
 
@@ -75,6 +80,11 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 ### 2.6 Producto/uso funcional
 
 - [ ] Integrar en frontend endpoints ya disponibles en backend (facets, summary, top, comparison, alerts) o retirar alcance no usado: [memory-bank/PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md#L248)
+
+### 2.7 Accesibilidad
+
+- [ ] Ejecutar auditoría automatizada con axe/Lighthouse en entorno con navegador disponible (bloqueado actualmente por falta de binario Chrome en el contenedor)
+- [x] Contraste de textos y elementos interactivos revisado contra tokens de color; cumplimiento AA en pares críticos evaluados: [frontend/src/index.css](../frontend/src/index.css#L5)
 
 ## 3) Prioridades a resolver (checklist activable)
 
