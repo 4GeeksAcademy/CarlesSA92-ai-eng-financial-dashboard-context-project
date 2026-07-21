@@ -61,7 +61,7 @@ export function KPICard({ label, value, helperText, icon: Icon, variant, loading
             <Icon size={16} className={styles.icon} aria-hidden="true" focusable={false} />
           </span>
         </div>
-        <p className="text-3xl font-semibold tracking-tight text-foreground">{value}</p>
+        <p className="min-h-10 text-3xl font-semibold tracking-tight tabular-nums text-foreground">{value}</p>
         <p className="text-xs text-muted-foreground leading-relaxed">{helperText}</p>
       </CardContent>
     </Card>

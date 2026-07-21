@@ -1,0 +1,14 @@
+{
+  "src/App.tsx -> @/components/dashboard/income-outcome-chart": {
+    "id": "src/App.tsx -> @/components/dashboard/income-outcome-chart",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_dashboard_income-outcome-chart_tsx.js"
+    ]
+  },
+  "src/App.tsx -> @/components/dashboard/profit-percent-chart": {
+    "id": "src/App.tsx -> @/components/dashboard/profit-percent-chart",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_dashboard_profit-percent-chart_tsx.js"
+    ]
+  }
+}
