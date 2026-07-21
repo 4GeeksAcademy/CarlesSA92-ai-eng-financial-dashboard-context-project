@@ -2,6 +2,128 @@
 
 Fecha: 2026-07-06
 
+## Actualizacion 2026-07-21: skill performance aplicada (Docker build + arranque)
+
+- Objetivo de la auditoria:
+	- Explicar por que el build de Docker era lento.
+	- Explicar por que el dashboard podia requerir refresco manual tras build/arranque.
+
+- Cambios aplicados:
+	- Se agregaron archivos .dockerignore por servicio para reducir contexto de build:
+		- [frontend/.dockerignore](../frontend/.dockerignore)
+		- [backend/.dockerignore](../backend/.dockerignore)
+	- Se mejoro reproducibilidad de dependencias frontend en Docker:
+		- [frontend/Dockerfile](../frontend/Dockerfile#L5) (`npm ci` en lugar de `npm install`).
+	- Se agrego readiness real entre servicios en Compose:
+		- Healthcheck de backend y dependencia condicionada en [docker-compose.yml](../docker-compose.yml#L11) y [docker-compose.yml](../docker-compose.yml#L23).
+	- Se agrego resiliencia de carga inicial en frontend con reintentos controlados:
+		- [frontend/src/App.tsx](../frontend/src/App.tsx#L16), [frontend/src/App.tsx](../frontend/src/App.tsx#L65), [frontend/src/App.tsx](../frontend/src/App.tsx#L110).
+	- Se documento flujo recomendado de ejecucion diaria sin rebuild continuo:
+		- [README.md](../README.md#L42)
+		- [README.es.md](../README.es.md#L42)
+
+- Evidencia medida (antes/despues):
+	- Contexto Docker de frontend:
+		- Antes: 63.47 MB transferidos al build.
+		- Despues: 8.22 kB transferidos al build.
+	- Estado de servicios tras cambios:
+		- Backend en estado healthy y frontend arriba en [docker-compose.yml](../docker-compose.yml#L11).
+		- Respuesta OK de API y frontend (HTTP 200 en la raiz).
+	- Build de aplicacion frontend:
+		- Next.js build de produccion validado (compilacion correcta).
+
+- Justificacion de mejora producida:
+	- Menor tiempo muerto en ciclo de desarrollo por eliminar transferencia innecesaria de artefactos pesados al contexto Docker.
+	- Menos reconstrucciones innecesarias por recomendacion explicita de usar `docker compose up` en trabajo diario y reservar `--build` para cambios de dependencias.
+	- Menos falsos errores en la primera carga del dashboard por sincronizar readiness backend/frontend y reintentar fetch inicial ante ventanas cortas de no disponibilidad.
+	- Mayor reproducibilidad de imagen frontend al usar `npm ci`, reduciendo variabilidad de instalaciones entre ejecuciones.
+
+## Actualizacion 2026-07-21: skill accessibility aplicada
+
+- Se aplicaron mejoras de accesibilidad en frontend usando la skill `accessibility` (WCAG 2.2):
+	- Navegacion por teclado reforzada con skip link y foco visible.
+	- Estados dinamicos anunciables para carga y error (`role=\"status\"`, `aria-live`, `role=\"alert\"`).
+	- Secciones del dashboard etiquetadas con `aria-labelledby`.
+	- Graficos con `role=\"img\"` y `aria-label` descriptivo.
+	- Iconos y marcadores visuales decorativos ocultos para lector de pantalla (`aria-hidden=\"true\"`).
+	- Semantica de titulos/descripciones en componente base `Card` mejorada a elementos HTML semanticos.
+
+- Evidencias principales:
+	- [frontend/src/App.tsx](../frontend/src/App.tsx#L46)
+	- [frontend/src/index.css](../frontend/src/index.css#L116)
+	- [frontend/src/components/ui/card.tsx](../frontend/src/components/ui/card.tsx#L31)
+	- [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L80)
+	- [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx#L81)
+	- [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L60)
+
+- Validaciones ejecutadas:
+	- Frontend lint: OK.
+	- Frontend tests (Vitest): OK (5/5).
+	- Contraste de color: verificado en tokens principales (texto y elementos interactivos) con cumplimiento AA en pares criticos evaluados.
+	- Auditoria automatica axe: bloqueada en este contenedor por ausencia de binario Chrome; pendiente repetir en entorno con navegador.
+
+## Actualizacion 2026-07-21: skill vercel-react-best-practices aplicada
+
+- Se aplicaron optimizaciones de React/Next.js enfocadas en rendimiento y estabilidad visual:
+	- Migracion del frontend a Next.js App Router.
+	- Definicion de title y meta description con Metadata API en layout y paginas.
+	- Fuente Inter optimizada con next/font (display swap).
+	- Carga dinamica de graficos con next/dynamic para reducir JS inicial.
+	- Mitigacion de layout shift percibido en KPIs con `tabular-nums` y altura minima estable.
+	- Manejo de fetch client con AbortController para evitar actualizaciones tras unmount.
+	- Pipeline de estilos en Next restaurado con PostCSS y @tailwindcss/postcss.
+
+- Evidencias principales:
+	- [frontend/app/layout.tsx](../frontend/app/layout.tsx)
+	- [frontend/app/page.tsx](../frontend/app/page.tsx)
+	- [frontend/app/not-found.tsx](../frontend/app/not-found.tsx)
+	- [frontend/src/App.tsx](../frontend/src/App.tsx)
+	- [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx)
+	- [frontend/src/index.css](../frontend/src/index.css)
+	- [frontend/postcss.config.mjs](../frontend/postcss.config.mjs)
+	- [frontend/next.config.ts](../frontend/next.config.ts)
+
+- Validaciones ejecutadas:
+	- Frontend build (Next.js): OK.
+	- Frontend lint: OK.
+	- Frontend runtime en Docker Compose: OK en puerto 5173.
+
+## Actualizacion 2026-07-21: skill financial-format-and-domain-contract aplicada
+
+- Objetivo de la auditoria:
+	- Estandarizar formato financiero en una sola politica reutilizable (moneda, porcentaje y fechas de periodo).
+	- Eliminar formateo inline en componentes para reducir inconsistencias.
+	- Unificar terminologia de negocio e idioma de UI para alinear frontend con contratos del API.
+
+- Cambios aplicados:
+	- Centralizacion de politica financiera en utilidades compartidas:
+		- Locale y moneda unificados (`en-US`, `USD`).
+		- Helper de moneda compacta para ejes de graficos.
+		- Helper de porcentaje con precision configurable.
+		- Evidencia: [frontend/src/lib/financial-utils.ts](../frontend/src/lib/financial-utils.ts)
+	- Normalizacion de ejes y tooltips en charts usando helpers compartidos:
+		- Eliminado formateo inline de moneda y porcentaje.
+		- Evidencia: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx), [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx)
+	- Consistencia terminologica en KPIs:
+		- Textos ajustados a `income/outcome` para alinearse con el dominio ya tipado.
+		- Evidencia: [frontend/src/components/dashboard/kpi-row.tsx](../frontend/src/components/dashboard/kpi-row.tsx)
+	- Consistencia de idioma en UI:
+		- Mensaje de error de carga alineado al idioma principal en ingles.
+		- Evidencia: [frontend/src/App.tsx](../frontend/src/App.tsx)
+	- Cobertura de pruebas de formato ampliada:
+		- Casos para moneda compacta, precision explicita y porcentaje negativo.
+		- Evidencia: [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts)
+
+- Validaciones ejecutadas:
+	- Frontend lint: OK.
+	- Frontend tests (Vitest): OK (7/7).
+
+- Justificacion de mejora producida:
+	- Menor riesgo de discrepancias visuales y numericas al existir una unica fuente de verdad para formato financiero.
+	- Menor deuda de mantenimiento al remover logica de formateo duplicada en componentes de presentacion.
+	- Mayor coherencia funcional al alinear etiquetas y textos de UI con los contratos del dominio (`income/outcome`).
+	- Mayor confianza en cambios futuros por cobertura adicional de pruebas en casos limite de formato.
+
 ## Resumen rapido
 
 - El proyecto tiene una base solida para aprendizaje y desarrollo local: separacion frontend/backend, tipado en frontend, modelos Pydantic en backend, lint y tests funcionando.
@@ -10,7 +132,7 @@ Fecha: 2026-07-06
 ## Estado de verificacion ejecutada
 
 - Frontend lint: OK (eslint)
-- Frontend tests: OK (vitest, 5/5)
+- Frontend tests: OK (vitest, 7/7)
 - Backend tests: OK (pytest, 15/15)
 - Warning observado en backend tests: deprecacion de TestClient/httpx en stack actual
 
@@ -191,7 +313,7 @@ Malas practicas / riesgos
 Buenas practicas
 
 1. Scripts de trabajo claros (dev, build, lint, test): [frontend/package.json](frontend/package.json#L7).
-2. Alias de imports para mantenibilidad: [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L13) y [frontend/vite.config.ts](frontend/vite.config.ts#L20).
+2. Alias de imports para mantenibilidad: [frontend/tsconfig.json](frontend/tsconfig.json) y [frontend/next.config.ts](frontend/next.config.ts).
 3. Configuracion de calidad estandar en lint y TypeScript: [frontend/eslint.config.js](frontend/eslint.config.js#L13) y [frontend/tsconfig.app.json](frontend/tsconfig.app.json#L22).
 
 Malas practicas / riesgos

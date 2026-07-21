@@ -1,6 +1,6 @@
 # Estado actual del proyecto y repositorio
 
-Fecha de corte: 2026-07-07
+Fecha de corte: 2026-07-21
 Fuente base: [memory-bank/PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md), [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md), [memory-bank/STACK_TECNOLOGICO.md](STACK_TECNOLOGICO.md), reglas en [.agents/rules](../.agents/rules/01-arquitectura-modularidad.md).
 
 Este documento funciona como tablero operativo con checks para ir marcando avances reales.
@@ -9,6 +9,12 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ### 1.1 Frontend
 
+- [x] Migración de frontend desde Vite a Next.js (App Router): [frontend/app/page.tsx](../frontend/app/page.tsx), [frontend/package.json](../frontend/package.json)
+- [x] Metadata API en layout y páginas (title + description): [frontend/app/layout.tsx](../frontend/app/layout.tsx), [frontend/app/page.tsx](../frontend/app/page.tsx), [frontend/app/not-found.tsx](../frontend/app/not-found.tsx)
+- [x] Optimización de fuente con next/font (Inter, display swap): [frontend/app/layout.tsx](../frontend/app/layout.tsx), [frontend/src/index.css](../frontend/src/index.css)
+- [x] Reducción de bundle inicial con carga dinámica de charts (next/dynamic): [frontend/src/App.tsx](../frontend/src/App.tsx)
+- [x] Mitigación de layout shift percibido en KPIs con tabular-nums y altura estable: [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx)
+- [x] Tailwind restaurado en Next.js mediante PostCSS: [frontend/postcss.config.mjs](../frontend/postcss.config.mjs), [frontend/package.json](../frontend/package.json)
 - [x] Dashboard financiero con layout principal y secciones KPI + gráficos: [frontend/src/App.tsx](../frontend/src/App.tsx#L45)
 - [x] Fila de KPIs (Total Income, Total Outcome, Profit, Profit Margin): [frontend/src/components/dashboard/kpi-row.tsx](../frontend/src/components/dashboard/kpi-row.tsx#L11)
 - [x] Gráfico Income vs Outcome: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L45)
@@ -16,6 +22,13 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 - [x] Estados de carga con skeletons en KPIs y charts: [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L35)
 - [x] Consumo API desde frontend (endpoint /api/metrics): [frontend/src/App.tsx](../frontend/src/App.tsx#L16)
 - [x] Cálculo de KPIs y agregación mensual en utilidades puras: [frontend/src/lib/financial-utils.ts](../frontend/src/lib/financial-utils.ts#L21)
+- [x] Estandarizacion de formato financiero (moneda, porcentaje, fecha de periodo y notacion compacta) con utilidades compartidas: [frontend/src/lib/financial-utils.ts](../frontend/src/lib/financial-utils.ts)
+- [x] Normalizacion de ejes/tooltips de charts sin formateo inline: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx), [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx)
+- [x] Consistencia terminologica en UI alineada a dominio income/outcome: [frontend/src/components/dashboard/kpi-row.tsx](../frontend/src/components/dashboard/kpi-row.tsx), [frontend/src/App.tsx](../frontend/src/App.tsx)
+- [x] Mejora de accesibilidad con landmarks etiquetados, skip link, anuncios de estado y roles ARIA para error/carga: [frontend/src/App.tsx](../frontend/src/App.tsx#L46)
+- [x] Semántica de tarjetas mejorada (títulos/descripciones) y elementos decorativos ocultos a lector de pantalla: [frontend/src/components/ui/card.tsx](../frontend/src/components/ui/card.tsx#L31), [frontend/src/components/dashboard/kpi-card.tsx](../frontend/src/components/dashboard/kpi-card.tsx#L60), [frontend/src/components/dashboard/dashboard-header.tsx](../frontend/src/components/dashboard/dashboard-header.tsx#L11)
+- [x] Etiquetado accesible de gráficos y estados sin datos/carga: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx#L52), [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx#L53)
+- [x] Estilos globales de foco visible y utilidades sr-only/skip-link: [frontend/src/index.css](../frontend/src/index.css#L116)
 
 ### 1.2 Backend
 
@@ -33,15 +46,22 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 ### 1.3 Infraestructura y tooling
 
 - [x] Orquestación con Docker Compose (frontend + backend): [docker-compose.yml](../docker-compose.yml#L2)
-- [x] Vite proxy de /api hacia backend: [frontend/vite.config.ts](../frontend/vite.config.ts#L12)
+- [x] Rewrite de Next.js para /api hacia backend: [frontend/next.config.ts](../frontend/next.config.ts)
 - [x] Scripts de desarrollo, build, lint y test en frontend: [frontend/package.json](../frontend/package.json#L7)
+- [x] Frontend Docker actualizado para ejecutar Next.js en puerto 5173: [frontend/Dockerfile](../frontend/Dockerfile)
+- [x] Contexto de build Docker optimizado con .dockerignore por servicio (frontend/backend): [frontend/.dockerignore](../frontend/.dockerignore), [backend/.dockerignore](../backend/.dockerignore)
+- [x] Reproducibilidad de instalacion frontend en Docker con npm ci: [frontend/Dockerfile](../frontend/Dockerfile#L5)
+- [x] Readiness backend/frontend en Compose mediante healthcheck + depends_on condicionado: [docker-compose.yml](../docker-compose.yml#L11), [docker-compose.yml](../docker-compose.yml#L23)
 - [x] Reglas de agentes definidas en .agents/rules: [.agents/rules/01-arquitectura-modularidad.md](../.agents/rules/01-arquitectura-modularidad.md#L1)
 
 ### 1.4 Calidad y pruebas
 
 - [x] Tests backend sobre rutas y filtros: [backend/tests/test_routes.py](../backend/tests/test_routes.py#L12)
 - [x] Tests frontend de utilidades financieras: [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts#L35)
+- [x] Cobertura ampliada de tests de formato financiero (moneda compacta, precision y signo en porcentaje): [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts)
 - [x] Lint configurado para frontend: [frontend/eslint.config.js](../frontend/eslint.config.js#L8)
+- [x] Verificación posterior a cambios de accesibilidad en frontend (lint y tests): [frontend/package.json](../frontend/package.json#L9), [frontend/package.json](../frontend/package.json#L11)
+- [x] Build de producción de Next.js validado tras optimizaciones de rendimiento: [frontend/package.json](../frontend/package.json)
 
 ## 2) Gaps conocidos (pendientes)
 
@@ -68,13 +88,18 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ### 2.5 Documentación y DX
 
-- [ ] Corregir referencia a frontend/.env.example inexistente o crear archivo: [README.md](../README.md#L46)
+- [x] Guia de arranque actualizada para separar primer build de ejecucion diaria (`up --build` vs `up`): [README.md](../README.md#L42), [README.es.md](../README.es.md#L42)
 - [ ] Definir guía de contribución técnica (convenciones, calidad, flujo): [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md#L149)
 - [ ] Definir idioma principal de UI y glosario de dominio: [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md#L95)
 
 ### 2.6 Producto/uso funcional
 
 - [ ] Integrar en frontend endpoints ya disponibles en backend (facets, summary, top, comparison, alerts) o retirar alcance no usado: [memory-bank/PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md#L248)
+
+### 2.7 Accesibilidad
+
+- [ ] Ejecutar auditoría automatizada con axe/Lighthouse en entorno con navegador disponible (bloqueado actualmente por falta de binario Chrome en el contenedor)
+- [x] Contraste de textos y elementos interactivos revisado contra tokens de color; cumplimiento AA en pares críticos evaluados: [frontend/src/index.css](../frontend/src/index.css#L5)
 
 ## 3) Prioridades a resolver (checklist activable)
 
@@ -98,7 +123,7 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ## P3 - DX y gobernanza
 
-- [ ] P3.1 Corregir README con referencia real de entorno
+- [x] P3.1 Corregir README con referencia real de entorno y flujo de arranque diario
 - [ ] P3.2 Documentar convenciones de naming e idioma
 - [ ] P3.3 Definir checklist de merge: lint + tests frontend + tests backend
 

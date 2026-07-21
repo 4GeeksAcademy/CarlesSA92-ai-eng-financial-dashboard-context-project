@@ -4,6 +4,7 @@ import {
   computeKPIs,
   computeMonthlyData,
   formatCurrency,
+  formatCurrencyCompact,
   formatPercent,
 } from "./financial-utils";
 import type { FinancialMovement } from "./financial-types";
@@ -108,7 +109,15 @@ describe("formatters", () => {
     expect(formatCurrency(1234.56)).toBe("$1,235");
   });
 
+  it("formats compact currency for chart axes", () => {
+    expect(formatCurrencyCompact(1250)).toBe("$1.3K");
+  });
+
   it("formats percent with one decimal", () => {
     expect(formatPercent(15.555)).toBe("15.6%");
+  });
+
+  it("formats percent with explicit precision and preserves sign", () => {
+    expect(formatPercent(-8.4, 0)).toBe("-8%");
   });
 });
