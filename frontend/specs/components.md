@@ -44,10 +44,7 @@ export interface DateRangeFilterProps {
 		startDate: string | null
 		endDate: string | null
 	}
-	availableRange: {
-		minDate: string // YYYY-MM-DD
-		maxDate: string // YYYY-MM-DD
-	} | null
+	availableRange: Pick<FacetsResponse, 'min_date' | 'max_date'> | null
 	loading?: boolean
 	disabled?: boolean
 	validationError?: string | null
@@ -73,10 +70,7 @@ export interface DashboardDateRangeSectionProps {
 		startDate: string | null
 		endDate: string | null
 	}
-	availableRange: {
-		minDate: string
-		maxDate: string
-	} | null
+	availableRange: Pick<FacetsResponse, 'min_date' | 'max_date'> | null
 	facetsLoading: boolean
 	facetsError: string | null
 	validationError: string | null
@@ -156,15 +150,11 @@ Responsabilidad: mostrar alertas de anomalias y estado vacio.
 
 Props:
 ```ts
-export interface OutcomeAlertRow {
-	period: string
-	outcomeTotal: number
-	baselineAverage: number
-	increaseRatio: number // ej. 0.42
-}
+// AlertEntry viene de specs/api-types.ts y conserva el contrato API (snake_case).
+// Si la UI requiere camelCase, la transformacion se hace en la capa de adaptacion, no en el contrato.
 
 export interface OutcomeAlertsTableProps {
-	rows: OutcomeAlertRow[]
+	rows: AlertEntry[]
 	loading?: boolean
 	error?: string | null
 	emptyMessage?: string
@@ -256,15 +246,12 @@ Responsabilidad: tabla reutilizable para B2B y B2C.
 
 Props:
 ```ts
-export interface BusinessTopIncomeRow {
-	category: string
-	totalAmount: number
-	percentageOfGroup: number
-}
+// CategoryEntry y TopCategoriesResponse vienen de specs/api-types.ts.
+// percentageOfGroup es valor derivado en UI a partir de total_amount.
 
 export interface BusinessTopIncomeTableProps {
 	businessType: 'B2B' | 'B2C'
-	rows: BusinessTopIncomeRow[]
+	rows: TopCategoriesResponse
 	totalIncome: number
 	loading?: boolean
 	error?: string | null
@@ -307,10 +294,7 @@ export interface ComparisonDateRangeFilterProps {
 		startDate: string | null
 		endDate: string | null
 	}
-	availableRange: {
-		minDate: string
-		maxDate: string
-	} | null
+	availableRange: Pick<FacetsResponse, 'min_date' | 'max_date'> | null
 	loading?: boolean
 	onChange: (next: { startDate: string | null; endDate: string | null }) => void
 	onClear: () => void
