@@ -31,6 +31,7 @@ Excluido:
 - El backend ya soporta `start_date` y `end_date` en endpoints de metricas.
 - El endpoint `GET /api/metrics/facets` devuelve `min_date` y `max_date` para acotar entradas validas.
 - La UI actual usa React + TypeScript + componentes del directorio `components/dashboard`.
+- Para query params, usar `DateRangeFilter` definido en `specs/param-types.ts`.
 
 ### Componentes a implementar
 
@@ -122,6 +123,7 @@ Excluido:
 - El backend expone `GET /api/metrics/alerts` con `threshold`, `group_by`, `start_date`, `end_date` y opcional `business_type`.
 - Respuesta actual: `period`, `outcome_total`, `baseline_average`, `increase_ratio`.
 - La pantalla principal ya contiene KPIs y dos graficos; esta tabla se agrega debajo de esa seccion.
+- Para query params, usar `AlertsParams` definido en `specs/param-types.ts`.
 
 ### Componentes a implementar
 
@@ -223,6 +225,7 @@ Excluido:
 - El backend ya soporta filtros por `business_type` y fechas en endpoints de resumen/categorias.
 - `GET /api/metrics/facets` devuelve `business_types` y `categories` disponibles.
 - En frontend actual no existe router declarado; la especificacion debe contemplar agregar una nueva vista y mecanismo de navegacion minimo.
+- Para query params del top de categorias, usar `TopCategoriesParams` definido en `specs/param-types.ts`.
 
 ### Componentes a implementar
 
