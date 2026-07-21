@@ -14,6 +14,8 @@ import {
 import { computeKPIs, computeMonthlyData } from "@/lib/financial-utils";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+const INITIAL_FETCH_ATTEMPTS = 5;
+const INITIAL_FETCH_RETRY_DELAY_MS = 1200;
 
 const IncomeOutcomeChart = dynamic(
   () =>
@@ -60,6 +62,50 @@ async function fetchFinancialData(signal?: AbortSignal): Promise<FinancialMoveme
   return response.json();
 }
 
+function waitForRetry(delayMs: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      if (signal) {
+        signal.removeEventListener("abort", abortHandler);
+      }
+      resolve();
+    }, delayMs);
+
+    function abortHandler() {
+      window.clearTimeout(timeoutId);
+      reject(new DOMException("The operation was aborted.", "AbortError"));
+    }
+
+    if (signal) {
+      signal.addEventListener("abort", abortHandler, { once: true });
+    }
+  });
+}
+
+async function fetchFinancialDataWithRetry(signal?: AbortSignal): Promise<FinancialMovement[]> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= INITIAL_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchFinancialData(signal);
+    } catch (error) {
+      if ((error as { name?: string })?.name === "AbortError") {
+        throw error;
+      }
+
+      lastError = error;
+
+      if (attempt === INITIAL_FETCH_ATTEMPTS) {
+        break;
+      }
+
+      await waitForRetry(INITIAL_FETCH_RETRY_DELAY_MS, signal);
+    }
+  }
+
+  throw lastError;
+}
+
 function App() {
   const [metrics, setMetrics] = useState<KPIMetrics | null>(null);
   const [monthlyData, setMonthlyData] = useState<MonthlyDataPoint[]>([]);
@@ -69,7 +115,7 @@ function App() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchFinancialData(controller.signal)
+    fetchFinancialDataWithRetry(controller.signal)
       .then((movements) => {
         setMetrics(computeKPIs(movements));
         setMonthlyData(computeMonthlyData(movements));

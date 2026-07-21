@@ -2,6 +2,42 @@
 
 Fecha: 2026-07-06
 
+## Actualizacion 2026-07-21: skill performance aplicada (Docker build + arranque)
+
+- Objetivo de la auditoria:
+	- Explicar por que el build de Docker era lento.
+	- Explicar por que el dashboard podia requerir refresco manual tras build/arranque.
+
+- Cambios aplicados:
+	- Se agregaron archivos .dockerignore por servicio para reducir contexto de build:
+		- [frontend/.dockerignore](../frontend/.dockerignore)
+		- [backend/.dockerignore](../backend/.dockerignore)
+	- Se mejoro reproducibilidad de dependencias frontend en Docker:
+		- [frontend/Dockerfile](../frontend/Dockerfile#L5) (`npm ci` en lugar de `npm install`).
+	- Se agrego readiness real entre servicios en Compose:
+		- Healthcheck de backend y dependencia condicionada en [docker-compose.yml](../docker-compose.yml#L11) y [docker-compose.yml](../docker-compose.yml#L23).
+	- Se agrego resiliencia de carga inicial en frontend con reintentos controlados:
+		- [frontend/src/App.tsx](../frontend/src/App.tsx#L16), [frontend/src/App.tsx](../frontend/src/App.tsx#L65), [frontend/src/App.tsx](../frontend/src/App.tsx#L110).
+	- Se documento flujo recomendado de ejecucion diaria sin rebuild continuo:
+		- [README.md](../README.md#L42)
+		- [README.es.md](../README.es.md#L42)
+
+- Evidencia medida (antes/despues):
+	- Contexto Docker de frontend:
+		- Antes: 63.47 MB transferidos al build.
+		- Despues: 8.22 kB transferidos al build.
+	- Estado de servicios tras cambios:
+		- Backend en estado healthy y frontend arriba en [docker-compose.yml](../docker-compose.yml#L11).
+		- Respuesta OK de API y frontend (HTTP 200 en la raiz).
+	- Build de aplicacion frontend:
+		- Next.js build de produccion validado (compilacion correcta).
+
+- Justificacion de mejora producida:
+	- Menor tiempo muerto en ciclo de desarrollo por eliminar transferencia innecesaria de artefactos pesados al contexto Docker.
+	- Menos reconstrucciones innecesarias por recomendacion explicita de usar `docker compose up` en trabajo diario y reservar `--build` para cambios de dependencias.
+	- Menos falsos errores en la primera carga del dashboard por sincronizar readiness backend/frontend y reintentar fetch inicial ante ventanas cortas de no disponibilidad.
+	- Mayor reproducibilidad de imagen frontend al usar `npm ci`, reduciendo variabilidad de instalaciones entre ejecuciones.
+
 ## Actualizacion 2026-07-21: skill accessibility aplicada
 
 - Se aplicaron mejoras de accesibilidad en frontend usando la skill `accessibility` (WCAG 2.2):

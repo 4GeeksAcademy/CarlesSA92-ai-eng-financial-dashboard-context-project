@@ -42,6 +42,13 @@ _Dashboard de métricas financieras con frontend en React + TypeScript y backend
 docker compose up --build
 ```
 
+Para la primera ejecución o cuando cambien las dependencias, usa el comando anterior.
+Para el trabajo diario, evita recompilar en cada arranque y usa:
+
+```bash
+docker compose up
+```
+
 El frontend usa por defecto un rewrite de Next.js para `/api`, así que no necesitas variables de entorno extra ni en desarrollo local ni en Codespaces.
 Si necesitas apuntar a otro backend, copia `frontend/.env.example` como `.env` y define `NEXT_PUBLIC_API_BASE_URL`.
 

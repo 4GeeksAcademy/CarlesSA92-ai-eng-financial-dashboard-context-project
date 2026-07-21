@@ -42,6 +42,13 @@ _Financial metrics dashboard with a React + TypeScript frontend and a FastAPI ba
 docker compose up --build
 ```
 
+For the first run or after dependency changes, use the build command above.
+For normal day-to-day development, prefer:
+
+```bash
+docker compose up
+```
+
 The frontend uses a Next.js rewrite for `/api` by default, so no extra environment variables are required in local development or Codespaces.
 If you need to target a different backend origin, copy `frontend/.env.example` to `.env` and set `NEXT_PUBLIC_API_BASE_URL`.
 

@@ -46,6 +46,9 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 - [x] Rewrite de Next.js para /api hacia backend: [frontend/next.config.ts](../frontend/next.config.ts)
 - [x] Scripts de desarrollo, build, lint y test en frontend: [frontend/package.json](../frontend/package.json#L7)
 - [x] Frontend Docker actualizado para ejecutar Next.js en puerto 5173: [frontend/Dockerfile](../frontend/Dockerfile)
+- [x] Contexto de build Docker optimizado con .dockerignore por servicio (frontend/backend): [frontend/.dockerignore](../frontend/.dockerignore), [backend/.dockerignore](../backend/.dockerignore)
+- [x] Reproducibilidad de instalacion frontend en Docker con npm ci: [frontend/Dockerfile](../frontend/Dockerfile#L5)
+- [x] Readiness backend/frontend en Compose mediante healthcheck + depends_on condicionado: [docker-compose.yml](../docker-compose.yml#L11), [docker-compose.yml](../docker-compose.yml#L23)
 - [x] Reglas de agentes definidas en .agents/rules: [.agents/rules/01-arquitectura-modularidad.md](../.agents/rules/01-arquitectura-modularidad.md#L1)
 
 ### 1.4 Calidad y pruebas
@@ -81,7 +84,7 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ### 2.5 Documentación y DX
 
-- [ ] Corregir referencia a frontend/.env.example inexistente o crear archivo: [README.md](../README.md#L46)
+- [x] Guia de arranque actualizada para separar primer build de ejecucion diaria (`up --build` vs `up`): [README.md](../README.md#L42), [README.es.md](../README.es.md#L42)
 - [ ] Definir guía de contribución técnica (convenciones, calidad, flujo): [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md#L149)
 - [ ] Definir idioma principal de UI y glosario de dominio: [memory-bank/REVISION_PROYECTO.md](REVISION_PROYECTO.md#L95)
 
@@ -116,7 +119,7 @@ Este documento funciona como tablero operativo con checks para ir marcando avanc
 
 ## P3 - DX y gobernanza
 
-- [ ] P3.1 Corregir README con referencia real de entorno
+- [x] P3.1 Corregir README con referencia real de entorno y flujo de arranque diario
 - [ ] P3.2 Documentar convenciones de naming e idioma
 - [ ] P3.3 Definir checklist de merge: lint + tests frontend + tests backend
 
