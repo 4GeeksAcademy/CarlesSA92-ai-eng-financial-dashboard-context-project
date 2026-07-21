@@ -88,6 +88,42 @@ Fecha: 2026-07-06
 	- Frontend lint: OK.
 	- Frontend runtime en Docker Compose: OK en puerto 5173.
 
+## Actualizacion 2026-07-21: skill financial-format-and-domain-contract aplicada
+
+- Objetivo de la auditoria:
+	- Estandarizar formato financiero en una sola politica reutilizable (moneda, porcentaje y fechas de periodo).
+	- Eliminar formateo inline en componentes para reducir inconsistencias.
+	- Unificar terminologia de negocio e idioma de UI para alinear frontend con contratos del API.
+
+- Cambios aplicados:
+	- Centralizacion de politica financiera en utilidades compartidas:
+		- Locale y moneda unificados (`en-US`, `USD`).
+		- Helper de moneda compacta para ejes de graficos.
+		- Helper de porcentaje con precision configurable.
+		- Evidencia: [frontend/src/lib/financial-utils.ts](../frontend/src/lib/financial-utils.ts)
+	- Normalizacion de ejes y tooltips en charts usando helpers compartidos:
+		- Eliminado formateo inline de moneda y porcentaje.
+		- Evidencia: [frontend/src/components/dashboard/income-outcome-chart.tsx](../frontend/src/components/dashboard/income-outcome-chart.tsx), [frontend/src/components/dashboard/profit-percent-chart.tsx](../frontend/src/components/dashboard/profit-percent-chart.tsx)
+	- Consistencia terminologica en KPIs:
+		- Textos ajustados a `income/outcome` para alinearse con el dominio ya tipado.
+		- Evidencia: [frontend/src/components/dashboard/kpi-row.tsx](../frontend/src/components/dashboard/kpi-row.tsx)
+	- Consistencia de idioma en UI:
+		- Mensaje de error de carga alineado al idioma principal en ingles.
+		- Evidencia: [frontend/src/App.tsx](../frontend/src/App.tsx)
+	- Cobertura de pruebas de formato ampliada:
+		- Casos para moneda compacta, precision explicita y porcentaje negativo.
+		- Evidencia: [frontend/src/lib/financial-utils.test.ts](../frontend/src/lib/financial-utils.test.ts)
+
+- Validaciones ejecutadas:
+	- Frontend lint: OK.
+	- Frontend tests (Vitest): OK (7/7).
+
+- Justificacion de mejora producida:
+	- Menor riesgo de discrepancias visuales y numericas al existir una unica fuente de verdad para formato financiero.
+	- Menor deuda de mantenimiento al remover logica de formateo duplicada en componentes de presentacion.
+	- Mayor coherencia funcional al alinear etiquetas y textos de UI con los contratos del dominio (`income/outcome`).
+	- Mayor confianza en cambios futuros por cobertura adicional de pruebas en casos limite de formato.
+
 ## Resumen rapido
 
 - El proyecto tiene una base solida para aprendizaje y desarrollo local: separacion frontend/backend, tipado en frontend, modelos Pydantic en backend, lint y tests funcionando.
@@ -96,7 +132,7 @@ Fecha: 2026-07-06
 ## Estado de verificacion ejecutada
 
 - Frontend lint: OK (eslint)
-- Frontend tests: OK (vitest, 5/5)
+- Frontend tests: OK (vitest, 7/7)
 - Backend tests: OK (pytest, 15/15)
 - Warning observado en backend tests: deprecacion de TestClient/httpx en stack actual
 

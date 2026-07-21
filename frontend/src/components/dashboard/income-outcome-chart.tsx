@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type MonthlyDataPoint } from '@/lib/financial-types'
-import { formatCurrency } from '@/lib/financial-utils'
+import { formatCurrency, formatCurrencyCompact } from '@/lib/financial-utils'
 import {
   LineChart,
   Line,
@@ -68,7 +68,7 @@ export function IncomeOutcomeChart({ data, loading }: IncomeOutcomeChartProps) {
     <Card className="border-border/60">
       <CardHeader className="pb-4">
         <CardTitle className="text-base font-semibold">Income vs. Outcome</CardTitle>
-        <CardDescription>Monthly revenue and expenditure evolution</CardDescription>
+        <CardDescription>Monthly income and outcome evolution</CardDescription>
       </CardHeader>
       <CardContent>
         {!hasData ? (
@@ -93,7 +93,7 @@ export function IncomeOutcomeChart({ data, loading }: IncomeOutcomeChartProps) {
                 tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                tickFormatter={formatCurrencyCompact}
                 width={48}
               />
               <Tooltip content={<CustomTooltip />} />

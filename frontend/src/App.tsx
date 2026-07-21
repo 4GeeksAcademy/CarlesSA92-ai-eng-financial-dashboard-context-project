@@ -126,7 +126,7 @@ function App() {
         }
 
         setError(
-          "No se pudo cargar la informacion financiera. Revisa la API de backend.",
+          "Could not load financial data. Check the backend API connection.",
         );
       })
       .finally(() => {

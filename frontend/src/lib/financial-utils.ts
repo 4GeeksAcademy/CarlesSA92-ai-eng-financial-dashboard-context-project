@@ -4,6 +4,9 @@ import {
   type MonthlyDataPoint,
 } from "./financial-types";
 
+export const FINANCIAL_LOCALE = "en-US";
+export const FINANCIAL_CURRENCY = "USD";
+
 function toYearMonthKey(value: Date): string {
   return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}`;
 }
@@ -12,7 +15,7 @@ function formatMonthYearLabel(yearMonthKey: string): string {
   const [yearText, monthText] = yearMonthKey.split("-");
   const year = Number(yearText);
   const month = Number(monthText) - 1;
-  return new Date(year, month, 1).toLocaleDateString("en-US", {
+  return new Date(year, month, 1).toLocaleDateString(FINANCIAL_LOCALE, {
     month: "short",
     year: "numeric",
   });
@@ -67,14 +70,27 @@ export function computeMonthlyData(
 }
 
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat(FINANCIAL_LOCALE, {
     style: "currency",
-    currency: "USD",
+    currency: FINANCIAL_CURRENCY,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
 }
 
-export function formatPercent(value: number): string {
-  return `${value.toFixed(1)}%`;
+export function formatCurrencyCompact(value: number): string {
+  return new Intl.NumberFormat(FINANCIAL_LOCALE, {
+    style: "currency",
+    currency: FINANCIAL_CURRENCY,
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+export function formatPercent(value: number, fractionDigits = 1): string {
+  return new Intl.NumberFormat(FINANCIAL_LOCALE, {
+    style: "percent",
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(value / 100);
 }

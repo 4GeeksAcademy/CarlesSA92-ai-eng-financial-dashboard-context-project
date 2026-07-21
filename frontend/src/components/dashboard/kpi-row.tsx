@@ -14,7 +14,7 @@ export function KPIRow({ metrics, loading }: KPIRowProps) {
       <KPICard
         label="Total Income"
         value={metrics ? formatCurrency(metrics.totalIncome) : '—'}
-        helperText="Cumulative revenue from all income movements"
+        helperText="Cumulative income from all income movements"
         icon={TrendingUp}
         variant="income"
         loading={loading}
@@ -22,7 +22,7 @@ export function KPIRow({ metrics, loading }: KPIRowProps) {
       <KPICard
         label="Total Outcome"
         value={metrics ? formatCurrency(metrics.totalOutcome) : '—'}
-        helperText="Total expenditure across all categories"
+        helperText="Total outcome across all categories"
         icon={TrendingDown}
         variant="outcome"
         loading={loading}
@@ -30,7 +30,7 @@ export function KPIRow({ metrics, loading }: KPIRowProps) {
       <KPICard
         label="Profit"
         value={metrics ? formatCurrency(metrics.profit) : '—'}
-        helperText="Net profit — income minus total outcome"
+        helperText="Net profit: income minus total outcome"
         icon={DollarSign}
         variant="profit"
         loading={loading}

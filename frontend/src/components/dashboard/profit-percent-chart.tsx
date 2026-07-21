@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type MonthlyDataPoint } from '@/lib/financial-types'
+import { formatPercent } from '@/lib/financial-utils'
 import {
   LineChart,
   Line,
@@ -42,7 +43,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
           style={{ backgroundColor: 'var(--chart-profit)' }}
         />
         <span className="text-muted-foreground">Profit margin:</span>
-        <span className="font-medium text-foreground ml-auto pl-4">{value.toFixed(1)}%</span>
+        <span className="font-medium text-foreground ml-auto pl-4">{formatPercent(value)}</span>
       </div>
     </div>
   )
@@ -95,7 +96,7 @@ export function ProfitPercentChart({ data, loading }: ProfitPercentChartProps) {
                 tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(v) => `${v.toFixed(0)}%`}
+                tickFormatter={(v) => formatPercent(v, 0)}
                 width={40}
                 domain={['auto', 'auto']}
               />
